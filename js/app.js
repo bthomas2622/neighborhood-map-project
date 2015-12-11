@@ -1,31 +1,53 @@
-var map;
-function initMap() {
-	map = new google.maps.Map(document.getElementById('map'), {
-	  center: {lat: 33.755, lng: -84.390},
-	  zoom: 12
-	});
-
-  setMarkers(map);
-}
-
-// Data for the markers consisting of a name, a LatLng and a zIndex for the
-// order in which these markers should display on top of each other.
 var foodplaces = [
-  ['Pho Dai Loi #2', 33.865206, -84.305052, 1],
-  ['Taqueria Del Sol', 33.787378, -84.412928, 2],
-  ['TWO Urban Licks', 33.768498, -84.361257, 3],
-  ['King of Pops', 33.763779, -84.358858, 4],
-  ['The Greater Good BBQ', 33.876289, -84.379854, 5]
+  {
+	name : 'Pho Dai Loi #2',
+	lat : 33.865206,
+	lon : -84.305052,
+	order :  1
+  },
+  {
+	name : 'Taqueria Del Sol',
+	lat : 33.787378,
+	lon : -84.412928,
+	order :  2
+  },
+  {
+	name : 'TWO Urban Licks',
+	lat : 33.768498,
+	lon : -84.361257,
+	order :  3
+  },
+  {
+	name : 'King of Pops',
+	lat : 33.763779,
+	lon : -84.358858,
+	order :  4
+  },
+  {
+	name : 'The Greater Good BBQ',
+	lat : 33.876289,
+	lon : -84.379854,
+	order :  5
+  },
 ];
 
-function setMarkers(map) {
-  // Adds markers to the map.
+function initMap() {
+	var map = new google.maps.Map(document.getElementById('map'), {
+	  //center: {lat: 33.755, lng: -84.390},
+	  center: {lat: 33.800, lng: -84.390},
+	  zoom: 12,
+	  disableDefaultUI: true
+	});
 
-  // Marker sizes are expressed as a Size of X,Y where the origin of the image
-  // (0,0) is located in the top left of the image.
+	setMarkers(map, foodplaces);
+}
 
-  // Origins, anchor positions and coordinates of the marker increase in the X
-  // direction to the right and in the Y direction down.
+function setMarkers(map, foodplaces) {
+	// Adds markers to the map.
+	// Marker sizes are expressed as a Size of X,Y where the origin of the image
+	// (0,0) is located in the top left of the image.
+	// Origins, anchor positions and coordinates of the marker increase in the X
+	// direction to the right and in the Y direction down.
   var image = {
     url: 'img/face.png',
     // This marker is 20 pixels wide by 32 pixels high.
@@ -42,16 +64,43 @@ function setMarkers(map) {
     coords: [1, 1, 1, 35, 25, 35, 25, 1],
     type: 'poly'
   };
-
   for (var i = 0; i < foodplaces.length; i++) {
     var foodplace = foodplaces[i];
     var marker = new google.maps.Marker({
-      position: {lat: foodplace[1], lng: foodplace[2]},
+      position: {lat: foodplace.lat, lng: foodplace.lon},
       map: map,
       icon: image,
       shape: shape,
-      title: foodplace[0],
-      zIndex: foodplace[3]
+      title: foodplace.name,
+      zIndex: foodplace.order
     });
   }
-}
+};
+
+var foodplaceModel = function(data){
+	this.name = ko.observable(data.name);
+	this.lat = ko.observable(data.lat);
+	this.lon = ko.observable(data.lon);
+	this.order = ko.observable(data.order);
+};
+
+
+var ViewModel = function () {
+	var self = this;
+	this.foodList = ko.observableArray([]);
+	foodplaces.forEach(function(foodplace){
+		self.foodList.push(new foodplaceModel(foodplace));
+	});
+
+	this.currentFood = ko.observable(this.foodList()[0]);
+
+	this.setFood = function(clickedFood) {
+		self.currentFood(clickedFood);
+	};
+
+};
+
+ko.applyBindings(new ViewModel)
+
+
+
