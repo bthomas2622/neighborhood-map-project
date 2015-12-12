@@ -13,9 +13,13 @@
         <h1>Ben's Favorite Atlanta Restaurants</h1>
     </header>
     <div class="sidebar"> 
-      <ol data-bind="foreach: foodList">
-        <li data-bind="text: name, click: $parent.setFood"></li>
-      </ol> 
+      <input placeholder="Search restaurants" type="search" data-bind="value: input, valueUpdate: 'keyup'" autocomplete="off">
+      <ul data-bind="foreach: foodList">
+<!--         <li data-bind="text: name, click: $parent.setFood"></li> -->
+        <li>
+          <strong data-bind="text: name"></strong> (<span data-bind="text: cuisine"></span>)
+        </li>
+      </ul> 
     </div>
     <div id="map"></div>
     <script src="js/lib/knockout-3.2.0.js"></script>

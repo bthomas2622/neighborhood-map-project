@@ -3,31 +3,41 @@ var foodplaces = [
 	name : 'Pho Dai Loi #2',
 	lat : 33.865206,
 	lon : -84.305052,
-	order :  1
+	order :  1,
+	cuisine : 'Vietnamese',
+	status : true
   },
   {
 	name : 'Taqueria Del Sol',
 	lat : 33.787378,
 	lon : -84.412928,
-	order :  2
+	order :  2,
+	cuisine : 'GOOD Tex Mex',
+	status : true
   },
   {
 	name : 'TWO Urban Licks',
 	lat : 33.768498,
 	lon : -84.361257,
-	order :  3
+	order :  3,
+	cuisine : 'Classy American',
+	status : true
   },
   {
 	name : 'King of Pops',
 	lat : 33.763779,
 	lon : -84.358858,
-	order :  4
+	order :  4,
+	cuisine : 'Popsicles',
+	status : true
   },
   {
 	name : 'The Greater Good BBQ',
 	lat : 33.876289,
 	lon : -84.379854,
-	order :  5
+	order :  5,
+	cuisine : 'BBQ',
+	status : true
   },
 ];
 
@@ -82,21 +92,39 @@ var foodplaceModel = function(data){
 	this.lat = ko.observable(data.lat);
 	this.lon = ko.observable(data.lon);
 	this.order = ko.observable(data.order);
+	this.cuisine = ko.observable(data.cuisine);
 };
 
 
 var ViewModel = function () {
 	var self = this;
-	this.foodList = ko.observableArray([]);
+
+	self.foodList = ko.observableArray([]);
 	foodplaces.forEach(function(foodplace){
 		self.foodList.push(new foodplaceModel(foodplace));
 	});
 
-	this.currentFood = ko.observable(this.foodList()[0]);
+	self.currentFood = ko.observable(this.foodList()[0]);
 
-	this.setFood = function(clickedFood) {
+	self.setFood = function(clickedFood) {
 		self.currentFood(clickedFood);
 	};
+
+	self.input = ko.observable("");
+
+	self.search = function(value){
+		self.foodList.removeAll();
+		for (var place in foodplaces){
+			if (foodplaces[place].name.toLowerCase().indexOf(value.toLowerCase()) >= 0) {
+				self.foodList.push(foodplaces[place]);
+			}
+			else if (foodplaces[place].cuisine.toLowerCase().indexOf(value.toLowerCase()) >= 0) {
+				self.foodList.push(foodplaces[place]);
+			}
+		}
+	}
+
+	self.input.subscribe(this.search);
 
 };
 
