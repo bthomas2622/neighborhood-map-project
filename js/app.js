@@ -49,7 +49,8 @@ function initMap() {
 	  //center: {lat: 33.755, lng: -84.390},
 	  center: {lat: 33.800, lng: -84.390},
 	  zoom: 12,
-	  disableDefaultUI: true
+	  disableDefaultUI: true,
+	  maxZoom : 18
 	});
 
 	setMarkers(map, foodplaces);
@@ -87,6 +88,9 @@ function setMarkers(map, foodplaces) {
 
 	setMapOnAll(null);
 	markers = [];
+	infowindow = new google.maps.InfoWindow({
+		content : "temp"
+	});
 
 	for (var i = 0; i < foodplaces.length; i++) {
 		var foodplace = foodplaces[i];
@@ -99,9 +103,24 @@ function setMarkers(map, foodplaces) {
 		      title: foodplace.name,
 		      zIndex: foodplace.order
 		    });
+
+		    google.maps.event.addListener(marker, 'click', function(){
+		    	infowindow.setContent("<div>test</div>")
+		    	infowindow.open(map, this);
+		    });
 		    markers.push(marker);
 		}
 	}
+
+	//autocenter map after markers updated
+	//new viewpoint bound
+	var bounds = new google.maps.LatLngBounds();
+	//loop through markers
+	$.each(markers, function (index, marker) {
+		bounds.extend(marker.position);
+	});
+	//resize map
+	map.fitBounds(bounds);
 };
 
 var foodplaceModel = function(data){
@@ -120,6 +139,14 @@ var ViewModel = function () {
 	foodplaces.forEach(function(foodplace){
 		self.foodList.push(new foodplaceModel(foodplace));
 	});
+
+	//wikipedia api request for infowindow that appear above markers when list items/markers are clicked
+	function getWiki() {
+
+	  //content is a div filled with available info - ternary operators filter out non-existant data
+	  return "<div>test</div>"
+	  //return "<div class='infowindow'><span class='info-title'>" + venue.name + "</span><br>" + address + "<br>" + (venue.phone ? venue.phone + "<br>" : "") + (venue.website ? "<a target='_new' href='" + venue.website + "'>" + venue.website + "</a>" : "") + venue.times; + "</div>";
+	}
 
 	self.currentFood = ko.observable(this.foodList()[0]);
 
@@ -148,6 +175,7 @@ var ViewModel = function () {
 	}
 
 	self.input.subscribe(this.search);
+
 
 };
 
