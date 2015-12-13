@@ -20,7 +20,7 @@ var foodplaces = [
 	lat : 33.768498,
 	lon : -84.361257,
 	order :  3,
-	cuisine : 'Classy American',
+	cuisine : 'Rotisserie',
 	status : true
   },
   {
@@ -79,7 +79,7 @@ function setMarkers(map, foodplaces) {
 	    		dishName = "taco"
 	    		break;
 	    	case "TWO Urban Licks":
-	    		dishName = "american"
+	    		dishName = "rotisserie"
 	    		break;
 	    	case "King of Pops":
 	    		dishName = "popsicles"
@@ -164,7 +164,7 @@ function setMarkers(map, foodplaces) {
 			    		correctMarkerId = "taco"
 			    		break;
 			    	case "TWO Urban Licks":
-			    		correctMarkerId = "american"
+			    		correctMarkerId = "rotisserie"
 			    		break;
 			    	case "King of Pops":
 			    		correctMarkerId = "popsicles"
