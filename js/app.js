@@ -1,6 +1,6 @@
 var foodplaces = [
   {
-	name : 'Pho Dai Loi #2',
+	name : 'Pho Dai Loi',
 	lat : 33.865206,
 	lon : -84.305052,
 	order :  1,
@@ -64,6 +64,54 @@ function setMapOnAll(map) {
 }
 
 function setMarkers(map, foodplaces) {
+	
+
+
+	//function to access wikipedia api to return article about restaurant signature dish
+	function getWikiDish(restName){
+	    // load wikipedia data
+	    var dishName;
+	    switch (restName){
+	    	case "Pho Dai Loi":
+	    		dishName = "pho"
+	    		break;
+	    	case "Taqueria Del Sol":
+	    		dishName = "taco"
+	    		break;
+	    	case "TWO Urban Licks":
+	    		dishName = "american"
+	    		break;
+	    	case "King of Pops":
+	    		dishName = "popsicles"
+	    		break;
+	    	case "The Greater Good BBQ":
+	    		dishName = "bbq"
+	    		break;
+	    	default:
+	    		dishName = "food"
+	    }
+
+	    var wikiUrl = 'http://en.wikipedia.org/w/api.php?action=opensearch&search=' + dishName + '&format=json&callback=wikiCallback';
+	    var wikiRequestTimeout = setTimeout(function(){
+	        $('wikipedia-container').replaceWith('<p>Apologies the wiki request timed out</p>');
+	    }, 8000);
+
+	    return $.ajax({
+	        url: wikiUrl,
+	        dataType: "jsonp",
+	        jsonp: "callback",
+	        async: false,
+	        success: function( response ) {
+	            var articleList = response[1];
+                var articleStr = articleList[0];
+                var url = 'http://en.wikipedia.org/wiki/' + articleStr;
+                $('#wikipedia-container').append('<div id="' + dishName + '"><h5 style="font-weight: bold">' + restName + ' Signature Dish!</h5><h3 style="margin: 5px; text-align: center"><a href="' + url + '">' + articleStr + '</a></h3><p style="font-weight: bold">Check it out on Wikipedia :)</p></div>');
+
+	            clearTimeout(wikiRequestTimeout);
+	        }
+	    });
+	}
+
 	// Adds markers to the map.
 	// Marker sizes are expressed as a Size of X,Y where the origin of the image
 	// (0,0) is located in the top left of the image.
@@ -94,6 +142,8 @@ function setMarkers(map, foodplaces) {
 
 	for (var i = 0; i < foodplaces.length; i++) {
 		var foodplace = foodplaces[i];
+		getWikiDish(foodplace.name);
+		console.log(foodplace.name);
 		if (foodplace.status) {
 		    var marker = new google.maps.Marker({
 		      position: {lat: foodplace.lat, lng: foodplace.lon},
@@ -105,12 +155,38 @@ function setMarkers(map, foodplaces) {
 		    });
 
 		    google.maps.event.addListener(marker, 'click', function(){
-		    	infowindow.setContent("<div>test</div>")
+		    	var correctMarkerId;
+		    	switch (this.title){
+			    	case "Pho Dai Loi":
+			    		correctMarkerId = "pho"
+			    		break;
+			    	case "Taqueria Del Sol":
+			    		correctMarkerId = "taco"
+			    		break;
+			    	case "TWO Urban Licks":
+			    		correctMarkerId = "american"
+			    		break;
+			    	case "King of Pops":
+			    		correctMarkerId = "popsicles"
+			    		break;
+			    	case "The Greater Good BBQ":
+			    		correctMarkerId = "bbq"
+			    		break;
+			    	default:
+			    		correctMarkerId = "food"
+			    }
+
+		    	var markertext = $('#'+ correctMarkerId + '').html();
+		    	console.log(this.title);
+		    	console.log($('#wikipedia-container').html());
+		    	infowindow.setContent(markertext);
 		    	infowindow.open(map, this);
 		    });
 		    markers.push(marker);
 		}
 	}
+	
+
 
 	//autocenter map after markers updated
 	//new viewpoint bound
@@ -139,14 +215,6 @@ var ViewModel = function () {
 	foodplaces.forEach(function(foodplace){
 		self.foodList.push(new foodplaceModel(foodplace));
 	});
-
-	//wikipedia api request for infowindow that appear above markers when list items/markers are clicked
-	function getWiki() {
-
-	  //content is a div filled with available info - ternary operators filter out non-existant data
-	  return "<div>test</div>"
-	  //return "<div class='infowindow'><span class='info-title'>" + venue.name + "</span><br>" + address + "<br>" + (venue.phone ? venue.phone + "<br>" : "") + (venue.website ? "<a target='_new' href='" + venue.website + "'>" + venue.website + "</a>" : "") + venue.times; + "</div>";
-	}
 
 	self.currentFood = ko.observable(this.foodList()[0]);
 
