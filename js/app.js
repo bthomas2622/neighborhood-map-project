@@ -194,13 +194,13 @@ function setMarkers(map, foodplaces) {
 		    		this.setAnimation(google.maps.Animation.BOUNCE);
 		    		stopAnimation(this);
 		    	}
+		    	//map.setZoom(15);
+		    	//map.setCenter(this.getPosition());
 		    });
 		    markers.push(marker);
 		}
 	}
 	
-
-
 	//autocenter map after markers updated
 	//new viewpoint bound
 	var bounds = new google.maps.LatLngBounds();
