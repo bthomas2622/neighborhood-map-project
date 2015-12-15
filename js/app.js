@@ -140,6 +140,10 @@ function setMarkers(map, foodplaces) {
 		content : "temp"
 	});
 
+	function stopAnimation(marker){
+		setTimeout(function(){marker.setAnimation(null);}, 1400);
+	}
+
 	for (var i = 0; i < foodplaces.length; i++) {
 		var foodplace = foodplaces[i];
 		getWikiDish(foodplace.name);
@@ -151,6 +155,7 @@ function setMarkers(map, foodplaces) {
 		      icon: image,
 		      shape: shape,
 		      title: foodplace.name,
+		      animation: google.maps.Animation.DROP,
 		      zIndex: foodplace.order
 		    });
 
@@ -175,12 +180,20 @@ function setMarkers(map, foodplaces) {
 			    	default:
 			    		correctMarkerId = "food"
 			    }
-
 		    	var markertext = $('#'+ correctMarkerId + '').html();
 		    	console.log(this.title);
 		    	console.log($('#wikipedia-container').html());
 		    	infowindow.setContent(markertext);
 		    	infowindow.open(map, this);
+		    });
+
+		    marker.addListener('click', function(){
+		    	if (this.getAnimation() !== null) {
+		    		this.setAnimation(null);
+		    	} else {
+		    		this.setAnimation(google.maps.Animation.BOUNCE);
+		    		stopAnimation(this);
+		    	}
 		    });
 		    markers.push(marker);
 		}
