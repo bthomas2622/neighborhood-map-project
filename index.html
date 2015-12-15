@@ -17,7 +17,7 @@
       <ul data-bind="foreach: foodList">
 <!--         <li data-bind="text: name, click: $parent.setFood"></li> -->
         <li>
-          <strong data-bind="text: name"></strong> (<span data-bind="text: cuisine"></span>)
+          <strong data-bind="text: name, click: $parent.listClick"></strong> (<span data-bind="text: cuisine"></span>)
         </li>
       </ul> 
     </div>

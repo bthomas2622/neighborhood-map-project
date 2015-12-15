@@ -147,7 +147,7 @@ function setMarkers(map, foodplaces) {
 	for (var i = 0; i < foodplaces.length; i++) {
 		var foodplace = foodplaces[i];
 		getWikiDish(foodplace.name);
-		console.log(foodplace.name);
+		//console.log(foodplace.name);
 		if (foodplace.status) {
 		    var marker = new google.maps.Marker({
 		      position: {lat: foodplace.lat, lng: foodplace.lon},
@@ -181,8 +181,8 @@ function setMarkers(map, foodplaces) {
 			    		correctMarkerId = "food"
 			    }
 		    	var markertext = $('#'+ correctMarkerId + '').html();
-		    	console.log(this.title);
-		    	console.log($('#wikipedia-container').html());
+		    	//console.log(this.title);
+		    	//console.log($('#wikipedia-container').html());
 		    	infowindow.setContent(markertext);
 		    	infowindow.open(map, this);
 		    });
@@ -229,10 +229,57 @@ var ViewModel = function () {
 		self.foodList.push(new foodplaceModel(foodplace));
 	});
 
-	self.currentFood = ko.observable(this.foodList()[0]);
+	//self.currentFood = ko.observable(this.foodList()[0]);
 
-	self.setFood = function(clickedFood) {
-		self.currentFood(clickedFood);
+	self.listClick = function(clickedFood) {
+		//console.log(typeof(clickedFood.name));
+		//console.log(typeof(clickedFood.name()));
+		var clickedFoodValue;
+		try {
+			clickedFoodValue = clickedFood.name();
+		}
+		catch(err) {
+			clickedFoodValue = clickedFood.name;
+		}
+
+		function stopAnimation(marker){
+			setTimeout(function(){marker.setAnimation(null);}, 1400);
+		}
+
+		//console.log(clickedFood.name());
+		for (matchedmarker in markers) {
+			//console.log(markers[matchedmarker].title);
+			if (markers[matchedmarker].title == clickedFoodValue){
+				if (markers[matchedmarker].getAnimation() !== null) {
+		    		markers[matchedmarker].setAnimation(null);
+		    	} else {
+		    		markers[matchedmarker].setAnimation(google.maps.Animation.BOUNCE);
+		    		stopAnimation(markers[matchedmarker]);
+		    	}
+		    	switch (markers[matchedmarker].title){
+			    	case "Pho Dai Loi":
+			    		correctMarkerId = "pho"
+			    		break;
+			    	case "Taqueria Del Sol":
+			    		correctMarkerId = "taco"
+			    		break;
+			    	case "TWO Urban Licks":
+			    		correctMarkerId = "rotisserie"
+			    		break;
+			    	case "King of Pops":
+			    		correctMarkerId = "popsicles"
+			    		break;
+			    	case "The Greater Good BBQ":
+			    		correctMarkerId = "bbq"
+			    		break;
+			    	default:
+			    		correctMarkerId = "food"
+			    }
+		    	var markertext = $('#'+ correctMarkerId + '').html();
+		    	infowindow.setContent(markertext);
+		    	infowindow.open(map, markers[matchedmarker]);
+			}
+		}
 	};
 
 	self.input = ko.observable("");
@@ -254,10 +301,7 @@ var ViewModel = function () {
 		}
 		setMarkers(map, foodplaces);
 	}
-
 	self.input.subscribe(this.search);
-
-
 };
 
 ko.applyBindings(new ViewModel)
