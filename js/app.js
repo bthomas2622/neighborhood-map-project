@@ -12,7 +12,7 @@ var foodplaces = [
 	lat : 33.787378,
 	lon : -84.412928,
 	order :  2,
-	cuisine : 'GOOD Tex Mex',
+	cuisine : 'Tex Mex',
 	status : true
   },
   {
@@ -105,7 +105,7 @@ function setMarkers(map, foodplaces) {
 	            var articleList = response[1];
                 var articleStr = articleList[0];
                 var url = 'http://en.wikipedia.org/wiki/' + articleStr;
-                $('#wikipedia-container').append('<div id="' + dishName + '"><h5 style="font-weight: bold">' + restName + ' Signature Dish!</h5><h3 style="margin: 5px; text-align: center"><a href="' + url + '">' + articleStr + '</a></h3><p style="font-weight: bold">Check it out on Wikipedia :)</p></div>');
+                $('#wikipedia-container').append('<div id="' + dishName + '"><p style="font-weight: bold">' + restName + ' Signature Dish!</p><p style="margin: 5px; text-align: center; font-weight: bold"><a style="color: blue" href="' + url + '">' + articleStr + '</a></p><p style="font-weight: bold">Check it out on Wikipedia :)</p></div>');
 
 	            clearTimeout(wikiRequestTimeout);
 	        }
