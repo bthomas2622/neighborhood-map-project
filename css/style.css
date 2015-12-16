@@ -11,8 +11,52 @@ html, body {
 
 .sidebar {
     z-index: 1;
-    background-color: gray;
+    background-color: rgba(45, 46, 60, 0.75);
     width: 300px;
     height: 100%;
     position: absolute;
+    border-right: 4px solid black;
+    border-left: 4px solid black;
+    border-bottom: 4px solid black;
 }
+
+h1 {
+  text-align: center;
+  background-color: #f06060;
+  margin: 0px;
+  padding: 10px;
+  font-family: 'Cardo', serif;
+  font-weight: bold;
+  color: black;
+}
+
+header {
+  border: 4px solid black;
+}
+
+li {
+  color: white;
+  font-family: 'Play', sans-serif;
+/*  background: #212D3A;*/
+  margin-top: 5px;
+  font-size: 18px
+}
+
+ul {
+    list-style-type: none;
+    margin: 0px;
+    padding-left: 10px;
+}
+
+input {
+  margin: 10px;
+}
+
+h3 {
+  color: white;
+  font-family: 'Play', sans-serif;
+/*  background: #212D3A;*/
+  margin-left: 10px;
+  font-size: 12px
+}
+
