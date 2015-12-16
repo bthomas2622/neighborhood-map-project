@@ -10,14 +10,14 @@ html, body {
 }
 
 .sidebar {
-    z-index: 1;
-    background-color: rgba(45, 46, 60, 0.75);
-    width: 300px;
-    height: 100%;
-    position: absolute;
-    border-right: 4px solid black;
-    border-left: 4px solid black;
-    border-bottom: 4px solid black;
+  z-index: 1;
+  background-color: rgba(45, 46, 60, 0.75);
+  width: 270px;
+  height: 100%;
+  position: absolute;
+  border-right: 4px solid black;
+  border-left: 4px solid black;
+  border-bottom: 4px solid black;
 }
 
 h1 {
@@ -37,15 +37,14 @@ header {
 li {
   color: white;
   font-family: 'Play', sans-serif;
-/*  background: #212D3A;*/
   margin-top: 5px;
   font-size: 18px
 }
 
 ul {
-    list-style-type: none;
-    margin: 0px;
-    padding-left: 10px;
+  list-style-type: none;
+  margin: 0px;
+  padding-left: 10px;
 }
 
 input {
@@ -55,8 +54,47 @@ input {
 h3 {
   color: white;
   font-family: 'Play', sans-serif;
-/*  background: #212D3A;*/
   margin-left: 10px;
   font-size: 12px
 }
 
+#menu {
+  display: none;
+}
+
+/* MEDIA QUERIES */
+
+@media screen and (max-width: 650px) {
+  .sidebar {
+    /* This trasform moves the drawer off canvas. */
+    -webkit-transform: translate(-300px, 0);
+    transform: translate(-300px, 0);
+    /* Optionally, we animate the drawer. */
+    transition: transform 0.3s ease;
+  }
+  .sidebar.open {
+    -webkit-transform: translate(0, 0);
+    transform: translate(0, 0);
+  }
+  #menu {
+    z-index: 2;
+    display: inline-block;
+    position: absolute;
+    margin: 10px;
+    right: 0;
+  }
+  #menu svg {
+    width: 32px;
+    fill: black;
+  }
+
+  h1 {
+    font-size: 22px;
+  }
+}
+
+@media screen and (max-width: 450px) {
+  h1 {
+    font-size: 14px;
+  }
+}
