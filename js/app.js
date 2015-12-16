@@ -1,3 +1,5 @@
+//the foodplaces object contains the information for all of my favorite restaurants that the 
+//model can make observable and the controller and associated functions can manipulate 
 var foodplaces = [
   {
 	name : 'Pho Dai Loi',
@@ -5,6 +7,7 @@ var foodplaces = [
 	lon : -84.305052,
 	order :  1,
 	cuisine : 'Vietnamese',
+	//the status attribute dictates whether the restaurant is visible after sorting
 	status : true
   },
   {
@@ -40,10 +43,13 @@ var foodplaces = [
 	status : true
   },
 ];
-
+//the map variable holds the google map element brought in from google map api
 var map;
+//the markers array holds all the markers that are presented on the map. this is necessary so that each 
+//marker can be accessed individually to animate and trigger info window
 var markers = [];
 
+//the initMap function is what sets the parameters of the google map object and initializes it
 function initMap() {
 	map = new google.maps.Map(document.getElementById('map'), {
 	  //center: {lat: 33.755, lng: -84.390},
@@ -53,24 +59,25 @@ function initMap() {
 	  maxZoom : 18
 	});
 
+	//call to setMarker so that initial map includes all my initial restaurant markers
 	setMarkers(map, foodplaces);
 }
 
-// Sets the map on all markers in the array.
+// Sets the map on all markers in the array. I really only use to nullify markers when changing them so i just feed "null" into function
 function setMapOnAll(map) {
   for (var i = 0; i < markers.length; i++) {
     markers[i].setMap(map);
   }
 }
 
+//the setMarkers function creates the markers to go on map and gives them all the information they need applied. 
+//Information like a wikipedia api call info window, marker image, size, animation, and clickable actions
 function setMarkers(map, foodplaces) {
-	
-
-
 	//function to access wikipedia api to return article about restaurant signature dish
 	function getWikiDish(restName){
 	    // load wikipedia data
 	    var dishName;
+	    //I use this switch statement to determine wikipedia search parameters per restaurant name
 	    switch (restName){
 	    	case "Pho Dai Loi":
 	    		dishName = "pho"
@@ -92,7 +99,8 @@ function setMarkers(map, foodplaces) {
 	    }
 
 	    var wikiUrl = 'http://en.wikipedia.org/w/api.php?action=opensearch&search=' + dishName + '&format=json&callback=wikiCallback';
-	    var wikiRequestTimeout = setTimeout(function(){
+	    //timeout variable ensures if wikipedia request times out an error is handled
+	    var wikiRequestTimeout = setTimeout(function(){ 
 	        $('wikipedia-container').replaceWith('<p>Apologies the wiki request timed out</p>');
 	    }, 8000);
 
@@ -134,12 +142,16 @@ function setMarkers(map, foodplaces) {
 	type: 'poly'
 	};
 
+	//initialize my map with no markers
 	setMapOnAll(null);
+	//remove old markers from array
 	markers = [];
+	//infowindow object that can be attributed to markers
 	infowindow = new google.maps.InfoWindow({
 		content : "temp"
 	});
 
+	//a timeout to ensure markers to not permanently bounce. has to be outside for loop to work
 	function stopAnimation(marker){
 		setTimeout(function(){marker.setAnimation(null);}, 1400);
 	}
@@ -148,6 +160,7 @@ function setMarkers(map, foodplaces) {
 		var foodplace = foodplaces[i];
 		getWikiDish(foodplace.name);
 		//console.log(foodplace.name);
+		//foodplace.status represents the true/false attribute after a search. so only restaurants that are part of search get a marker
 		if (foodplace.status) {
 		    var marker = new google.maps.Marker({
 		      position: {lat: foodplace.lat, lng: foodplace.lon},
@@ -159,6 +172,7 @@ function setMarkers(map, foodplaces) {
 		      zIndex: foodplace.order
 		    });
 
+		    //ensure marker has click attribute for info window
 		    google.maps.event.addListener(marker, 'click', function(){
 		    	var correctMarkerId;
 		    	switch (this.title){
@@ -187,6 +201,7 @@ function setMarkers(map, foodplaces) {
 		    	infowindow.open(map, this);
 		    });
 
+		    //ensure marker has click attribute for animation
 		    marker.addListener('click', function(){
 		    	if (this.getAnimation() !== null) {
 		    		this.setAnimation(null);
@@ -197,6 +212,7 @@ function setMarkers(map, foodplaces) {
 		    	//map.setZoom(15);
 		    	//map.setCenter(this.getPosition());
 		    });
+		    //add marker to markers array so that it can be individually accessed for search, etc.
 		    markers.push(marker);
 		}
 	}
@@ -212,6 +228,7 @@ function setMarkers(map, foodplaces) {
 	map.fitBounds(bounds);
 };
 
+//foodplacemodel is the knockout observable model object that will dynamically drive my sidebar and markers
 var foodplaceModel = function(data){
 	this.name = ko.observable(data.name);
 	this.lat = ko.observable(data.lat);
@@ -220,8 +237,9 @@ var foodplaceModel = function(data){
 	this.cuisine = ko.observable(data.cuisine);
 };
 
-
+//Viewmodel/controller where data gets accessed from DOM and search
 var ViewModel = function () {
+	//putting this into self where self is viewmodel avoids confusion
 	var self = this;
 
 	self.foodList = ko.observableArray([]);
@@ -229,12 +247,15 @@ var ViewModel = function () {
 		self.foodList.push(new foodplaceModel(foodplace));
 	});
 
-	//self.currentFood = ko.observable(this.foodList()[0]);
-
+	//the listClick function is how I get from the sidebar dom elements that list restaurants to the markers that represent them
 	self.listClick = function(clickedFood) {
 		//console.log(typeof(clickedFood.name));
 		//console.log(typeof(clickedFood.name()));
 		var clickedFoodValue;
+
+		//this was actually a really funny workaround. depending on the searched nature of the sidebar restaurants, the dom element could either
+		//represent the foodplacemodel observable object or just the foodplace object. one can be accessed by function and the other can't. so 
+		//this error catcher addresses both scenarios
 		try {
 			clickedFoodValue = clickedFood.name();
 		}
@@ -242,6 +263,7 @@ var ViewModel = function () {
 			clickedFoodValue = clickedFood.name;
 		}
 
+		//stopping that pesky animation. has to be outside for loop
 		function stopAnimation(marker){
 			setTimeout(function(){marker.setAnimation(null);}, 1400);
 		}
@@ -284,6 +306,7 @@ var ViewModel = function () {
 
 	self.input = ko.observable("");
 
+	//viewmodel search function to take action based on value inside search bar!
 	self.search = function(value){
 		self.foodList.removeAll();
 		for (var place in foodplaces){
@@ -301,9 +324,12 @@ var ViewModel = function () {
 		}
 		setMarkers(map, foodplaces);
 	}
+
+	//listener to search bar
 	self.input.subscribe(this.search);
 };
 
+//apply the knockout observable properties to the ViewModel, essential for dynamic DOM, etc.
 ko.applyBindings(new ViewModel)
 
 

@@ -58,24 +58,28 @@ h3 {
   font-size: 12px
 }
 
+/*hiding the hamburger button to pop out the sidebar when screen is not small */
 #menu {
   display: none;
 }
 
 /* MEDIA QUERIES */
-
 @media screen and (max-width: 650px) {
   .sidebar {
-    /* This trasform moves the drawer off canvas. */
+    /* This transform moves the drawer off canvas when the screen is smaller than max width */
     -webkit-transform: translate(-300px, 0);
     transform: translate(-300px, 0);
-    /* Optionally, we animate the drawer. */
+    /*animate the drawer*/
     transition: transform 0.3s ease;
   }
+
+  /*put the sidebar back to normal position*/
   .sidebar.open {
     -webkit-transform: translate(0, 0);
     transform: translate(0, 0);
   }
+
+  /*#menu and #menu svg throw the hamburger button to pop out the menu in an absolute position with chosen style*/
   #menu {
     z-index: 2;
     display: inline-block;
@@ -93,6 +97,7 @@ h3 {
   }
 }
 
+/*making font size smaller as screen gets smaller*/
 @media screen and (max-width: 450px) {
   h1 {
     font-size: 14px;
