@@ -51,13 +51,20 @@ var markers = [];
 
 //the initMap function is what sets the parameters of the google map object and initializes it
 function initMap() {
-	map = new google.maps.Map(document.getElementById('map'), {
-	  //center: {lat: 33.755, lng: -84.390},
-	  center: {lat: 33.800, lng: -84.390},
-	  zoom: 12,
-	  disableDefaultUI: true,
-	  maxZoom : 18
-	});
+
+	try {
+		map = new google.maps.Map(document.getElementById('map'), {
+		  center: {lat: 33.755, lng: -84.390},
+		  center: {lat: 33.800, lng: -84.390},
+		  zoom: 12,
+		  disableDefaultUI: true,
+		  maxZoom : 18
+		});
+	} catch (err) {
+		//if google map api does not work
+		$('#map').hide();
+		$('#map-error').html('<h2 style="text-align: center">Uh oh! The google map request failed</h2>');
+	}
 
 	//call to setMarker so that initial map includes all my initial restaurant markers
 	setMarkers(map, foodplaces);
@@ -99,24 +106,39 @@ function setMarkers(map, foodplaces) {
 	    }
 
 	    var wikiUrl = 'http://en.wikipedia.org/w/api.php?action=opensearch&search=' + dishName + '&format=json&callback=wikiCallback';
-	    //timeout variable ensures if wikipedia request times out an error is handled
-	    var wikiRequestTimeout = setTimeout(function(){ 
-	        $('wikipedia-container').replaceWith('<p>Apologies the wiki request timed out</p>');
-	    }, 8000);
+	    
+	    //the following commented out lines represent the old ajax fallback techniques, i wanted to keep for reference though
 
-	    return $.ajax({
+	    //timeout variable ensures if wikipedia request times out an error is handled
+	    // var wikiRequestTimeout = setTimeout(function(){ 
+	    //     $('wikipedia-container').replaceWith('<p>Apologies the wiki request timed out</p>');
+	    // }, 8000);
+
+	    // return $.ajax({
+	    //     url: wikiUrl,
+	    //     dataType: "jsonp",
+	    //     jsonp: "callback",
+	    //     async: false,
+	    //     success: function( response ) {
+	    //         var articleList = response[1];
+     //            var articleStr = articleList[0];
+     //            var url = 'http://en.wikipedia.org/wiki/' + articleStr;
+     //            $('#wikipedia-container').append('<div id="' + dishName + '"><p style="font-weight: bold">' + restName + ' Signature Dish!</p><p style="margin: 5px; text-align: center; font-weight: bold"><a style="color: blue" href="' + url + '">' + articleStr + '</a></p><p style="font-weight: bold">Check it out on Wikipedia :)</p></div>');
+	    //         clearTimeout(wikiRequestTimeout);
+	    //     }
+	    // });
+		return $.ajax({
 	        url: wikiUrl,
 	        dataType: "jsonp",
 	        jsonp: "callback",
-	        async: false,
-	        success: function( response ) {
-	            var articleList = response[1];
-                var articleStr = articleList[0];
-                var url = 'http://en.wikipedia.org/wiki/' + articleStr;
-                $('#wikipedia-container').append('<div id="' + dishName + '"><p style="font-weight: bold">' + restName + ' Signature Dish!</p><p style="margin: 5px; text-align: center; font-weight: bold"><a style="color: blue" href="' + url + '">' + articleStr + '</a></p><p style="font-weight: bold">Check it out on Wikipedia :)</p></div>');
-
-	            clearTimeout(wikiRequestTimeout);
-	        }
+	        //async: false,
+	    }).done(function(data, textStatus, jqXHR) {
+            var articleList = data[1];
+            var articleStr = articleList[0];
+            var url = 'http://en.wikipedia.org/wiki/' + articleStr;
+            $('#wikipedia-container').append('<div id="' + dishName + '"><p style="font-weight: bold">' + restName + ' Signature Dish!</p><p style="margin: 5px; text-align: center; font-weight: bold"><a style="color: blue" href="' + url + '">' + articleStr + '</a></p><p style="font-weight: bold">Check it out on Wikipedia :)</p></div>');
+	    }).fail(function(jqXHR, textStatus, errorThrown){
+	    	$('wikipedia-container').replaceWith('<p>Apologies the wiki request timed out</p>');
 	    });
 	}
 
