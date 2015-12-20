@@ -135,8 +135,8 @@ function setMarkers(map, foodplaces) {
             var articleStr = articleList[0];
             var url = 'http://en.wikipedia.org/wiki/' + articleStr;
             $('#wikipedia-container').append('<div id="' + dishName + '"><p style="font-weight: bold">' + restName + ' Signature Dish!</p><p style="margin: 5px; text-align: center; font-weight: bold"><a style="color: blue" href="' + url + '">' + articleStr + '</a></p><p style="font-weight: bold">Check it out on Wikipedia :)</p></div>');
-	    }).fail(function(jqXHR, textStatus, errorThrown){
-	    	$('wikipedia-container').replaceWith('<p>Apologies the wiki request timed out</p>');
+	    }).fail(function(){
+	    	$('#wikipedia-container').append('<div id="' + dishName + '">Apologies the wiki request timed out</div>');
 	    });
 	}
 
