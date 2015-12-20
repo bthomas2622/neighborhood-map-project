@@ -51,11 +51,9 @@ var markers = [];
 
 //the initMap function is what sets the parameters of the google map object and initializes it
 function initMap() {
-
 	try {
 		map = new google.maps.Map(document.getElementById('map'), {
 		  center: {lat: 33.755, lng: -84.390},
-		  center: {lat: 33.800, lng: -84.390},
 		  zoom: 12,
 		  disableDefaultUI: true,
 		  maxZoom : 18
@@ -87,22 +85,22 @@ function setMarkers(map, foodplaces) {
 	    //I use this switch statement to determine wikipedia search parameters per restaurant name
 	    switch (restName){
 	    	case "Pho Dai Loi":
-	    		dishName = "pho"
+	    		dishName = "pho";
 	    		break;
 	    	case "Taqueria Del Sol":
-	    		dishName = "taco"
+	    		dishName = "taco";
 	    		break;
 	    	case "TWO Urban Licks":
-	    		dishName = "rotisserie"
+	    		dishName = "rotisserie";
 	    		break;
 	    	case "King of Pops":
-	    		dishName = "popsicles"
+	    		dishName = "popsicles";
 	    		break;
 	    	case "The Greater Good BBQ":
-	    		dishName = "bbq"
+	    		dishName = "bbq";
 	    		break;
 	    	default:
-	    		dishName = "food"
+	    		dishName = "food";
 	    }
 
 	    var wikiUrl = 'http://en.wikipedia.org/w/api.php?action=opensearch&search=' + dishName + '&format=json&callback=wikiCallback';
@@ -199,22 +197,22 @@ function setMarkers(map, foodplaces) {
 		    	var correctMarkerId;
 		    	switch (this.title){
 			    	case "Pho Dai Loi":
-			    		correctMarkerId = "pho"
+			    		correctMarkerId = "pho";
 			    		break;
 			    	case "Taqueria Del Sol":
-			    		correctMarkerId = "taco"
+			    		correctMarkerId = "taco";
 			    		break;
 			    	case "TWO Urban Licks":
-			    		correctMarkerId = "rotisserie"
+			    		correctMarkerId = "rotisserie";
 			    		break;
 			    	case "King of Pops":
-			    		correctMarkerId = "popsicles"
+			    		correctMarkerId = "popsicles";
 			    		break;
 			    	case "The Greater Good BBQ":
-			    		correctMarkerId = "bbq"
+			    		correctMarkerId = "bbq";
 			    		break;
 			    	default:
-			    		correctMarkerId = "food"
+			    		correctMarkerId = "food";
 			    }
 		    	var markertext = $('#'+ correctMarkerId + '').html();
 		    	//console.log(this.title);
@@ -248,7 +246,7 @@ function setMarkers(map, foodplaces) {
 	});
 	//resize map
 	map.fitBounds(bounds);
-};
+}
 
 //foodplacemodel is the knockout observable model object that will dynamically drive my sidebar and markers
 var foodplaceModel = function(data){
@@ -291,7 +289,7 @@ var ViewModel = function () {
 		}
 
 		//console.log(clickedFood.name());
-		for (matchedmarker in markers) {
+		for (var matchedmarker in markers) {
 			//console.log(markers[matchedmarker].title);
 			if (markers[matchedmarker].title == clickedFoodValue){
 				if (markers[matchedmarker].getAnimation() !== null) {
@@ -302,22 +300,22 @@ var ViewModel = function () {
 		    	}
 		    	switch (markers[matchedmarker].title){
 			    	case "Pho Dai Loi":
-			    		correctMarkerId = "pho"
+			    		correctMarkerId = "pho";
 			    		break;
 			    	case "Taqueria Del Sol":
-			    		correctMarkerId = "taco"
+			    		correctMarkerId = "taco";
 			    		break;
 			    	case "TWO Urban Licks":
-			    		correctMarkerId = "rotisserie"
+			    		correctMarkerId = "rotisserie";
 			    		break;
 			    	case "King of Pops":
-			    		correctMarkerId = "popsicles"
+			    		correctMarkerId = "popsicles";
 			    		break;
 			    	case "The Greater Good BBQ":
-			    		correctMarkerId = "bbq"
+			    		correctMarkerId = "bbq";
 			    		break;
 			    	default:
-			    		correctMarkerId = "food"
+			    		correctMarkerId = "food";
 			    }
 		    	var markertext = $('#'+ correctMarkerId + '').html();
 		    	infowindow.setContent(markertext);
@@ -334,7 +332,7 @@ var ViewModel = function () {
 		for (var place in foodplaces){
 			foodplaces[place].status = false;
 		}
-		for (var place in foodplaces){
+		for (place in foodplaces){
 			if (foodplaces[place].name.toLowerCase().indexOf(value.toLowerCase()) >= 0) {
 				self.foodList.push(foodplaces[place]);
 				foodplaces[place].status = true;
@@ -345,14 +343,14 @@ var ViewModel = function () {
 			}
 		}
 		setMarkers(map, foodplaces);
-	}
+	};
 
 	//listener to search bar
 	self.input.subscribe(this.search);
 };
 
 //apply the knockout observable properties to the ViewModel, essential for dynamic DOM, etc.
-ko.applyBindings(new ViewModel)
+ko.applyBindings(new ViewModel);
 
 
 
